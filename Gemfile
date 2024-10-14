@@ -8,6 +8,10 @@ gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
 gem 'bootsnap', require: false
+gem 'active_model_serializers'
+gem "interactor"
+gem 'dry-validation', '~> 1.10'
+gem 'will_paginate'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
