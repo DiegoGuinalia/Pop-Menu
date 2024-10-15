@@ -1,5 +1,5 @@
 class MenuItemSerializer < ActiveModel::Serializer
-  attributes :name, :price
+  attributes :id, :name, :price, :menu_id
 
   def name
     object.item.name
