@@ -26,7 +26,7 @@ class Api::V1::MenusController < ApplicationController
 
   def destroy
     result = Delete::Menus.call(params: params)
-    body(result, result.proccessed_menu_ids)
+    body(result, result.deleted_menu_ids)
   end
 
   private

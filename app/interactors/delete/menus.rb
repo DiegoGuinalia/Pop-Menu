@@ -1,25 +1,10 @@
 module Delete
-  class Menus
-    include Interactor
-    include Utils
-
-    delegate :params, to: :context
-
-    def call
-      within_transaction do
-        delete_menu
-      end
-    end
-
+  class Menus < Base
     private
 
-    def delete_menu
+    def delete_entities
       Menu.where(id: only_ids).destroy_all
       context.deleted_menu_ids = { deleted_menu_ids: only_ids }
-    end
-
-    def only_ids
-      params[:ids].select{|param| param.is_a?(Integer)}
     end
   end
 end
