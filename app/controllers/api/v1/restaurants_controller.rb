@@ -1,6 +1,4 @@
 class Api::V1::RestaurantsController < ApplicationController
-  before_action :set_restaurant, only: %i[show update]
-
   def index
     restaurant = Restaurant
       .order(:created_at)
@@ -11,12 +9,14 @@ class Api::V1::RestaurantsController < ApplicationController
       RestaurantSerializer
     )
   rescue => e
-    return json_error_response(e.message, :bad_request)
+    json_error_response(e.message, :bad_request)
   end
 
   def show
-    return json_error_response('not found') unless @restaurant
-    json_success_response(RestaurantSerializer.new(@restaurant))
+    restaurant = Restaurant.find_by(id: params[:id])
+
+    return json_error_response('not found') unless restaurant
+    json_success_response(RestaurantSerializer.new(restaurant))
   end
 
   def create_or_update
@@ -29,11 +29,24 @@ class Api::V1::RestaurantsController < ApplicationController
     body(result, result.deleted_restaurant_ids)
   end
 
-  private
+  def upload
+    if params[:file].present?
+      json_data = File.read(params[:file].tempfile)
+      data_to_parse = JSON.parse(json_data, symbolize_names: true)
+      parsed_data = JsonDataParser.new(data_to_parse).run
+      result = ProcessData::RestaurantUpload.call(params: parsed_data)
 
-  def set_restaurant
-    @restaurant = Restaurant.find_by(id: params[:id])
+      if result.success?
+        body(result, 'ok')
+      else
+        json_error_response('Unable to process data', :unprocessable_entity)
+      end
+    else
+      json_error_response('File not found', :unprocessable_entity)
+    end
   end
+
+  private
 
   def menu_params
     params.permit(:id)

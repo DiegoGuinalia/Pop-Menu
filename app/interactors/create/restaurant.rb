@@ -6,15 +6,18 @@ module Create
       restaurant = if params[:id].present?
         ::Restaurant.find_by(id: params[:id])
       else
-        ::Restaurant.find_by(name: params[:name])
+        ::Restaurant.find_by(name: params[:restaurant_name])
       end
 
       if restaurant.nil?
-        context.restaurant = ::Restaurant.create!(restaurant_data)
-      else
-        restaurant.update(name: params[:name]) if params[:name].present?
-        context.restaurant = restaurant
+        return context.restaurant = ::Restaurant.create!(restaurant_data)
       end
+
+      if params[:restaurant_name].present? && params[:restaurant_name] != restaurant.name
+        restaurant.update(name: params[:restaurant_name])
+      end
+
+      context.restaurant = restaurant.reload
     end
 
     def set_associated_entity

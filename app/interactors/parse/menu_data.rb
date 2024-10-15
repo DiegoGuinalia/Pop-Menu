@@ -12,8 +12,13 @@ module Parse
     private
 
     def validate
-      result = MenuCreateContract.new.call(params.to_unsafe_h)
+      result = MenuCreateContract.new.call(unsafe_hash)
       context.fail!(error: result.errors.to_h) unless result.success?
+    end
+
+    def unsafe_hash
+      return params.to_unsafe_h unless params.is_a?(Hash)
+      params
     end
 
     def parse_data

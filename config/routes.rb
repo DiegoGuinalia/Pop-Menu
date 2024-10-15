@@ -7,8 +7,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       # restaurants
       resources :restaurants, only: [:index, :show]
-        post    'restaurants', to: 'restaurants#create_or_update'
-        delete  'restaurants', to: 'restaurants#destroy'
+        post    'restaurants',        to: 'restaurants#create_or_update'
+        delete  'restaurants',        to: 'restaurants#destroy'
+        post   'restaurants/upload',  to: 'restaurants#upload'
 
       # menus
       resources :menus, only: [:index, :show]
