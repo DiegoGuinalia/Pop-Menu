@@ -1,39 +1,24 @@
 module Create
-  class Menu
-    include Interactor
-    include Utils
-
-    delegate :params, to: :context
-
-    attr_accessor :restaurant
-
-    def call
-      set_restaurant
-
-      within_transaction do
-        create_menu
-      end
-    end
-
+  class Menu < Base
     private
 
-    def create_menu
-      menu = restaurant.menus.find_by(name: params[:name])
+    def create_or_update_entity
+      menu = associated_entity.menus.find_by(name: params[:name])
 
       if menu.nil?
-        return context.menu = ::Menu.create!(menu_data)
+        return context.menu = ::Menu.create!(entity_data)
       end
 
       menu.update(context.menu_data)
       context.menu = menu
     end
 
-    def set_restaurant
-      @restaurant = context.restaurant
+    def set_associated_entity
+      @associated_entity = context.restaurant
     end
 
-    def menu_data
-      context.menu_data[:restaurant_id] = restaurant.id
+    def entity_data
+      context.menu_data[:restaurant_id] = associated_entity.id
       context.menu_data
     end
   end

@@ -1,26 +1,23 @@
 module Create
-  class Restaurant
-    include Interactor
-    include Utils
-
-    delegate :params, to: :context
-
-    def call
-      within_transaction do
-        find_or_create_restaurant
-      end
-    end
-
+  class Restaurant < Base
     private
 
-    def find_or_create_restaurant
+    def create_or_update_entity
       restaurant = ::Restaurant.find_by(name: params[:restaurant_name])
 
       if restaurant.nil?
-        return context.restaurant = ::Restaurant.create(name: params[:restaurant_name])
+        context.restaurant = ::Restaurant.create!(restaurant_data)
+      else
+        context.restaurant = restaurant
       end
+    end
 
-      context.restaurant = restaurant
+    def set_associated_entity
+      @associated_entity = context.restaurant
+    end
+
+    def restaurant_data
+      { name: params[:restaurant_name] }
     end
   end
 end
