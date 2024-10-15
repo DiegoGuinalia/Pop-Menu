@@ -5,6 +5,12 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      # restaurants
+      resources :restaurants, only: [:index, :show]
+        post    'restaurants', to: 'restaurants#create_or_update'
+        delete  'restaurants', to: 'restaurants#destroy'
+
+      # menus
       resources :menus, only: [:index, :show]
       post    'menus', to: 'menus#create_or_update'
       delete  'menus', to: 'menus#destroy'

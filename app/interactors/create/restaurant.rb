@@ -3,11 +3,16 @@ module Create
     private
 
     def create_or_update_entity
-      restaurant = ::Restaurant.find_by(name: params[:restaurant_name])
+      restaurant = if params[:id].present?
+        ::Restaurant.find_by(id: params[:id])
+      else
+        ::Restaurant.find_by(name: params[:name])
+      end
 
       if restaurant.nil?
         context.restaurant = ::Restaurant.create!(restaurant_data)
       else
+        restaurant.update(name: params[:name]) if params[:name].present?
         context.restaurant = restaurant
       end
     end
@@ -17,7 +22,7 @@ module Create
     end
 
     def restaurant_data
-      { name: params[:restaurant_name] }
+      { name: params[:name] }
     end
   end
 end
