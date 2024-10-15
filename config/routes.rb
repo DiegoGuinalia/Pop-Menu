@@ -18,6 +18,11 @@ Rails.application.routes.draw do
       # menu items
       resources :menu_items, only: [:index, :show]
       delete  'menu_items', to: 'menu_items#destroy'
+
+      # items
+      resources :items, only: [:index, :show]
+      post    'items', to: 'items#create_or_update'
+      delete  'items', to: 'items#destroy'
     end
   end
 end
