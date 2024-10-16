@@ -17,8 +17,8 @@ module Parse
     end
 
     def unsafe_hash
-      return params.to_unsafe_h unless params.is_a?(Hash)
-      params
+      return params if params.is_a?(Hash)
+      params.to_unsafe_h
     end
 
     def parse_data

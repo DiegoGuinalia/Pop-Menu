@@ -31,15 +31,12 @@ class Api::V1::RestaurantsController < ApplicationController
 
   def upload
     if params[:file].present?
-      json_data = File.read(params[:file].tempfile)
-      data_to_parse = JSON.parse(json_data, symbolize_names: true)
-      parsed_data = JsonDataParser.new(data_to_parse).run
-      result = ProcessData::RestaurantUpload.call(params: parsed_data)
+      result = FileUpload::Json.call(file: params[:file])
 
       if result.success?
         body(result, 'ok')
       else
-        json_error_response('Unable to process data', :unprocessable_entity)
+        json_error_response(result.error, :unprocessable_entity)
       end
     else
       json_error_response('File not found', :unprocessable_entity)
