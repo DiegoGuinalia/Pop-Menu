@@ -34,7 +34,8 @@ class Api::V1::RestaurantsController < ApplicationController
       result = FileUpload::Json.call(file: params[:file])
 
       if result.success?
-        body(result, 'ok')
+        message = result.unprocessed_items.empty? ? "OK" : "Partially processed"
+        body(result, {unprocessed_items: result.unprocessed_items}, message)
       else
         json_error_response(result.error, :unprocessable_entity)
       end

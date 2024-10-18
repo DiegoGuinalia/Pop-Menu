@@ -1,13 +1,13 @@
 module Api
   module ResponseConcerns
-    def body(result, body_data = nil)
+    def body(result, body_data = nil, messages = [])
       if result.failure?
         body = { result: 'failed', error: result.error }
         return render json: body, :status => :unprocessable_entity
       end
 
       data = body_data || nil
-      render json: json_response_body('success', [], data)
+      render json: json_response_body('success', messages, data)
     end
 
     def json_error_response(messages, status = :unprocessable_entity)
