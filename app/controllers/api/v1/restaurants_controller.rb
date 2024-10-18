@@ -35,7 +35,13 @@ class Api::V1::RestaurantsController < ApplicationController
 
       if result.success?
         message = result.unprocessed_items.empty? ? "OK" : "Partially processed"
-        body(result, {unprocessed_items: result.unprocessed_items}, message)
+
+        body_data = {
+          processed_items: result.processed_items,
+          unprocessed_items: result.unprocessed_items
+        }
+        byebug
+        body(result, body_data, message)
       else
         json_error_response(result.error, :unprocessable_entity)
       end

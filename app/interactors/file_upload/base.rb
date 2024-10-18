@@ -7,10 +7,12 @@ module FileUpload
       raise 'File not provided' unless context.file.present?
 
       context.unprocessed_items = []
+      context.processed_items = []
 
       raw_data = read_file
       parsed_data = parse(raw_data)
       cleaned_data = clean_data(parsed_data)
+
       process_data(cleaned_data)
     rescue StandardError => e
       Rails.logger.error("Failed to process: #{e.class.name} - #{e.message}")
@@ -43,30 +45,27 @@ module FileUpload
         end
       end
 
-      data.map do |menu|
-        valid_name = menu[:name].match?(regex)
-        valid_restaurant_name = menu[:restaurant_name].match?(regex)
-
+      data.each do |menu|
         unprocessed_menu_items = menu[:menu_items].reject do |item|
           item[:name].match?(regex) && valid_price?(item[:price])
         end
 
-        unless unprocessed_menu_items.empty?
-          context.unprocessed_items << { menu_items: unprocessed_menu_items }
+        context.unprocessed_items.concat(unprocessed_menu_items) unless unprocessed_menu_items.empty?
+
+        unique_menu_items = {}
+
+        menu[:menu_items].each do |item|
+          if item[:name].match?(regex) && valid_price?(item[:price])
+            unique_menu_items[item[:price]] ||= item
+          end
         end
 
-        filtered_menu_items = menu[:menu_items].select do |item|
-          item[:name].match?(regex) && valid_price?(item[:price])
-        end
+        processed_menu_items = unique_menu_items.values
 
-        unless valid_name && valid_restaurant_name
-          context.unprocessed_items << { menu: { name: menu[:name], restaurant_name: menu[:restaurant_name], menu_items: filtered_menu_items } }
+        unless processed_menu_items.empty?
+          context.processed_items << { menu_items: processed_menu_items }
         end
-
-        if valid_name && valid_restaurant_name
-          menu.merge(menu_items: filtered_menu_items)
-        end
-      end.compact
+      end
     end
   end
 end
