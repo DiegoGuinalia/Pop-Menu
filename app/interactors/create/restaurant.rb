@@ -10,14 +10,24 @@ module Create
       end
 
       if restaurant.nil?
-        return context.restaurant = ::Restaurant.create!(restaurant_data)
-      end
+        restaurant = ::Restaurant.create!(restaurant_data)
 
-      if params[:restaurant_name].present? && params[:restaurant_name] != restaurant.name
-        restaurant.update(name: params[:restaurant_name])
+        if restaurant.persisted?
+          context.restaurant = restaurant
+        else
+          context.fail!(error: 'invalid attributes')
+        end
+      else
+        if params[:restaurant_name].present? && params[:restaurant_name] != restaurant.name
+          if restaurant.update(name: params[:restaurant_name])
+            context.restaurant = restaurant.reload
+          else
+            context.fail!(error: 'invalid attributes')
+          end
+        else
+          context.restaurant = restaurant.reload
+        end
       end
-
-      context.restaurant = restaurant.reload
     end
 
     def set_associated_entity

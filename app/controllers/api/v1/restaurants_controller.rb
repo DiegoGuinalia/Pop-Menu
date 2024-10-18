@@ -21,7 +21,12 @@ class Api::V1::RestaurantsController < ApplicationController
 
   def create_or_update
     result = Create::Restaurant.call(params: params)
-    body(result, RestaurantSerializer.new(result.restaurant))
+
+    if result.success?
+      body(result, RestaurantSerializer.new(result.restaurant))
+    else
+      json_error_response(result.error, :unprocessable_entity)
+    end
   end
 
   def destroy
@@ -32,7 +37,6 @@ class Api::V1::RestaurantsController < ApplicationController
   def upload
     if params[:file].present?
       result = FileUpload::Json.call(file: params[:file])
-
       if result.success?
         message = result.unprocessed_items.empty? ? "OK" : "Partially processed"
 
@@ -40,7 +44,6 @@ class Api::V1::RestaurantsController < ApplicationController
           processed_items: result.processed_items,
           unprocessed_items: result.unprocessed_items
         }
-        byebug
         body(result, body_data, message)
       else
         json_error_response(result.error, :unprocessable_entity)
