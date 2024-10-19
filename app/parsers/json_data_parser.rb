@@ -14,7 +14,6 @@ class JsonDataParser
   private
 
   def set_menu_data
-    byebug
     return [] if params[:restaurants].nil?
 
     menu_data_array = params[:restaurants].flat_map do |restaurant|

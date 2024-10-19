@@ -73,7 +73,6 @@ RSpec.describe Api::V1::ItemsController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'deletes the item' do
-      byebug
       expect {
         delete :destroy, params: { ids: [item.id] }
       }.to change(Item, :count).by(-1)
