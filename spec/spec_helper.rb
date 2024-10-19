@@ -44,6 +44,19 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
+  config.before(:suite) do
+    # Skip DatabaseCleaner's safeguard in order to be able to connect to a database using an URL:
+    DatabaseCleaner.allow_remote_database_url = true
+    DatabaseCleaner.clean_with(:deletion)
+    DatabaseCleaner.strategy = :transaction
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
