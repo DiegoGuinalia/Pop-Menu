@@ -1,0 +1,311 @@
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/items":
+    get:
+      tags:
+      - 1. Item
+      summary: list items
+      responses:
+        '200':
+          description: successful
+    post:
+      tags:
+      - 1. Item
+      summary: create_or_update item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Pasta"
+      responses:
+        '200':
+          description: successful
+    delete:
+      tags:
+      - 1. Item
+      summary: delete item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 1
+                    - 2
+                    - 9
+      responses:
+        '200':
+          description: successful
+  "/api/v1/items/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - 1. Item
+      summary: show item
+      responses:
+        '200':
+          description: successful
+  "/api/v1/menu_items":
+    get:
+      tags:
+      - 2. Menu Item
+      summary: list menu_items
+      responses:
+        '200':
+          description: successful
+    delete:
+      tags:
+      - 2. Menu Item
+      summary: delete menu_item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 1
+                    - 2
+                    - 9
+      responses:
+        '200':
+          description: successful
+  "/api/v1/menu_items/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - 2. Menu Item
+      summary: show menu_item
+      responses:
+        '200':
+          description: successful
+  "/api/v1/menus":
+    get:
+      tags:
+      - 3. Menu
+      summary: list menus
+      responses:
+        '200':
+          description: successful
+    post:
+      tags:
+      - 3. Menu
+      summary: create_or_update menu
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Dinner1"
+                restaurant_name:
+                  type: string
+                  example: "New Restaurant"
+                menu_items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "fish"
+                      price:
+                        type: number
+                        format: float
+                        example: 1.8
+              required:
+                - name
+                - restaurant_name
+                - menu_items
+      responses:
+        '200':
+          description: successful
+    delete:
+      tags:
+      - 3. Menu
+      summary: delete menu
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 1
+                    - 2
+                    - 9
+      responses:
+        '200':
+          description: successful
+  "/api/v1/menus/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - 3. Menu
+      summary: show menu
+      responses:
+        '200':
+          description: successful
+  "/api/v1/restaurants":
+    get:
+      tags:
+      - 4. Restaurant
+      summary: list restaurants
+      responses:
+        '200':
+          description: successful
+    post:
+      tags:
+      - 4. Restaurant
+      summary: create_or_update restaurant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurant_name:
+                  type: string
+                  example: "rocket lunch"
+                id:
+                  type: integer
+                  example: 4
+              required:
+                - restaurant_name
+                - id
+      responses:
+        '200':
+          description: successful
+    delete:
+      tags:
+      - 4. Restaurant
+      summary: delete restaurant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  example:
+                    - 1
+                    - 2
+                    - 9
+      responses:
+        '200':
+          description: successful
+  "/api/v1/restaurants/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - 4. Restaurant
+      summary: show restaurant
+      responses:
+        '200':
+          description: successful
+  "/api/v1/restaurants/upload":
+    post:
+      tags:
+      - 5. Json upload
+      summary: upload restaurant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurants:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Poppo's Cafe"
+                      menus:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "lunch"
+                            menu_items:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                    example: "Burger"
+                                  price:
+                                    type: number
+                                    format: float
+                                    example: 9.00
+              required:
+                - restaurants
+      responses:
+        '200':
+          description: successful
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000

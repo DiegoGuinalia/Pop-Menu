@@ -12,6 +12,8 @@ gem 'active_model_serializers'
 gem "interactor"
 gem 'dry-validation', '~> 1.10'
 gem 'will_paginate'
+gem 'rswag'
+gem 'rack-cors', require: 'rack/cors'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
