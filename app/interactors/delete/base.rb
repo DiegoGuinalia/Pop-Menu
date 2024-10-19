@@ -18,7 +18,7 @@ module Delete
     end
 
     def only_ids
-      params[:ids].select { |param| param.is_a?(Integer) }
+      params[:ids].select { |param| Integer(param) rescue false }
     end
   end
 end
